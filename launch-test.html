@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>App Launch Test</title>
+<style>
+:root{--bg:#0E1215;--panel:#1A2026;--inner:#14191E;--line:#2A333B;--text:#E8EBED;--muted:#A9B3BA;--accent:#7A9CB8;--ok:#8FA68E;--bad:#C99AA4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;padding:16px}
+h1{font-size:22px;margin:0 0 8px}
+p{color:var(--muted);margin:0 0 12px;font-size:14px;line-height:1.4}
+#status{padding:12px 14px;border-radius:12px;background:var(--panel);font-size:16px;font-weight:600;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:10px}
+.row{background:var(--panel);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px}
+.row b{flex:1;font-size:16px}
+.btn,a.btn{min-height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--inner);color:var(--text);font-size:14px;font-weight:600;display:flex;align-items:center;text-decoration:none}
+#log{margin-top:12px;background:var(--panel);border-radius:12px;padding:12px;font:13px/1.5 monospace;color:var(--muted);white-space:pre-wrap;min-height:60px}
+</style></head><body>
+<h1>App launch test</h1>
+<p>For each app, try Method A first, then Method B. Tell me which ones open the app. Come back with the Back or Home gesture, or reopen Fully.</p>
+<div id="status">Checking…</div>
+<div class="grid" id="grid"></div>
+<div id="log"></div>
+<script>
+const APPS=[['Keep','com.google.android.keep'],['Drive','com.google.android.apps.docs'],['Gemini','com.google.android.apps.bard'],['Claude','com.anthropic.claude'],['Arlo','com.netgear.android'],['Spotify','com.spotify.music'],['Netflix','com.netflix.mediaclient'],['Disney+','com.disney.disneyplus'],['Paramount+','com.cbs.app'],['Prime Video','com.amazon.avod.thirdpartyclient'],['Pluto TV','tv.pluto.android']];
+const log=m=>{const l=document.getElementById('log');l.textContent=new Date().toLocaleTimeString()+'  '+m+'\n'+l.textContent};
+const hasFully=typeof fully!=='undefined';
+document.getElementById('status').textContent=hasFully?'Fully JavaScript interface: FOUND (Method A can work)':'Fully JavaScript interface: NOT FOUND (Method A will not work)';
+document.getElementById('status').style.color=hasFully?'var(--ok)':'var(--bad)';
+const g=document.getElementById('grid');
+APPS.forEach(([n,p])=>{
+  const r=document.createElement('div');r.className='row';
+  const intent='intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package='+p+';end';
+  r.innerHTML='<b>'+n+'</b>';
+  const a=document.createElement('button');a.className='btn';a.textContent='A: Fully';
+  a.onclick=()=>{try{if(!hasFully){log(n+' A: no Fully interface');return}fully.startApplication(p);log(n+' A: sent')}catch(e){log(n+' A error: '+e.message)}};
+  const b=document.createElement('a');b.className='btn';b.textContent='B: Link';b.href=intent;b.onclick=()=>log(n+' B: tapped');
+  r.append(a,b);g.append(r);
+});
+log('Page loaded');
+</script></body></html>
