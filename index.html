@@ -177,7 +177,7 @@ body{background:radial-gradient(120% 90% at 0% 0%,#2F6C73 0%,rgba(47,108,115,0) 
       <div class="panel" id="sp"></div>
     </section>
   </div>
-  <div class="note" id="note">Preview version. Events you add are saved on this device.</div>
+  <div class="note" id="note">Preview version. Events you add are saved on this device. Page v2026-11-16e</div>
   </div>
   <div id="pop" hidden></div>
   <div id="modal" hidden></div>
@@ -218,6 +218,7 @@ let tt;function toast(m,ms){const t=$('#toast');t.textContent=m;t.classList.add(
 
 /* ---------- header ---------- */
 const NOW=new Date();
+const VER='2026-11-16e';
 const LOADDAY=NOW.getDate();
 function tick(){const n=new Date();if(n.getDate()!==LOADDAY){location.reload();return}$('#clock').textContent=n.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});$('#date').textContent=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
 tick();setInterval(tick,15000);
@@ -320,8 +321,9 @@ function setNote(){
   const n=$('#note');if(!n)return;
   if(!GON)return;
   const t=G.syncAt?new Date(G.syncAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'';
-  n.textContent=G.authErr&&!G.tok?'Google Calendar is not connected.':
-    (G.syncAt?'Google Calendar · synced '+t+(G.err?' · can’t reach Google, showing saved events':''):(G.err?'Can’t reach Google Calendar yet.':'Connecting to Google Calendar…'));
+  const vs=' · page v'+VER;
+  n.textContent=(G.authErr&&!G.tok?'Google Calendar is not connected.':
+    (G.syncAt?'Google Calendar · synced '+t+(G.err?' · can’t reach Google, showing saved events':''):(G.err?'Can’t reach Google Calendar yet.':'Connecting to Google Calendar…')))+vs;
 }
 async function gLoad(){
   if(!GON)return;
@@ -881,6 +883,12 @@ document.addEventListener('pointerdown',e=>{
 });
 
 
+/* ---------- hold the clock for 1.5 seconds to reload the newest page ---------- */
+(function(){let t=null;const c=$('#clock');
+  const go=()=>{toast('Reloading…');setTimeout(()=>{location.replace(location.pathname+'?v='+Date.now())},200)};
+  c.addEventListener('pointerdown',()=>{clearTimeout(t);t=setTimeout(go,1500)});
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>c.addEventListener(ev,()=>clearTimeout(t)));
+})();
 /* ---------- mic + night dimming ---------- */
 $('#mic').addEventListener('click',()=>{if(HUB&&HUB.assist)HUB.assist();else toast('The voice assistant works in the tablet app')});
 const DIM={from:22,to:6,level:0.10,idle:30000};
