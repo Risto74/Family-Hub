@@ -158,6 +158,9 @@ body{background:radial-gradient(120% 90% at 0% 0%,#2F6C73 0%,rgba(47,108,115,0) 
 .tile img{width:44px;height:44px;border-radius:12px;display:block}
 .tile>span{font-size:12px;line-height:1.1;font-weight:600}
 .tile .ph0{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;background:rgba(255,255,255,0.16);color:var(--text)}
+
+.li>*,.pt>*{pointer-events:none}
+.li,.pt{touch-action:manipulation}
 </style>
 
 <div id="stage">
@@ -637,8 +640,8 @@ async function spAccess(){
 }
 async function spApi(method,path,body){
   let a=await spAccess();
-  const go=t=>fetch('https://api.spotify.com/v1/'+path,{method,headers:Object.assign({Authorization:'Bearer '+t},body?{'Content-Type':'application/json'}:{}),body:body?JSON.stringify(body):undefined});
-  let r=await go(a);
+  const go=t=>{const ac=new AbortController();setTimeout(()=>ac.abort(),12000);return fetch('https://api.spotify.com/v1/'+path,{signal:ac.signal,method,headers:Object.assign({Authorization:'Bearer '+t},body?{'Content-Type':'application/json'}:{}),body:body?JSON.stringify(body):undefined})};
+  let r;try{r=await go(a)}catch(e){throw new Error('Could not reach Spotify')}
   if(r.status===401){S.tok.e=0;a=await spAccess();r=await go(a)}
   if(r.status===204||r.status===202)return null;
   let j=null;try{j=await r.json()}catch(e){}
@@ -648,7 +651,12 @@ async function spApi(method,path,body){
 const spMsg=e=>e.message==='NOAUTH'?'Spotify is not connected':(e.status===404||e.reason==='NO_ACTIVE_DEVICE')?'No active Spotify device. Open Spotify on the tablet, then try again.':(e.status===403?'Spotify said no: '+e.message:'Spotify: '+e.message);
 async function spPoll(){
   if(!S.tok||S.busy)return;S.busy=true;
-  try{S.P=await spApi('GET','me/player?additional_types=episode');S.at=Date.now();S.err='';spLike()}
+  try{
+    const old=S.P,oi=old&&old.item,est=oi?curPos(spInfo()):0;
+    const np=await spApi('GET','me/player?additional_types=episode');
+    if(np&&np.item&&oi&&np.item.id===oi.id&&np.is_playing&&old.is_playing&&np.progress_ms/1000<est-3&&Date.now()>(S.accept||0))np.progress_ms=est*1000;
+    S.P=np;S.at=Date.now();S.err='';spLike();
+  }
   catch(e){S.err=e.message}
   S.busy=false;
   if(!(document.activeElement&&document.activeElement.id==='q'))renderSp();
@@ -660,11 +668,11 @@ async function spLike(){
   renderSp();
 }
 async function spCmd(method,path,body){
-  try{await spApi(method,path,body);setTimeout(spPoll,500);return true}
+  try{if(/seek|previous|next/.test(path))S.accept=Date.now()+4000;await spApi(method,path,body);setTimeout(spPoll,1500);return true}
   catch(e){toast(spMsg(e),4500);return false}
 }
 async function spPlay(body){
-  try{await spApi('PUT','me/player/play',body||undefined);setTimeout(spPoll,600);return}
+  try{S.accept=Date.now()+4000;await spApi('PUT','me/player/play',body||undefined);setTimeout(spPoll,1500);return}
   catch(e){
     if(!(e.status===404||e.reason==='NO_ACTIVE_DEVICE')){toast(spMsg(e),4500);return}
   }
@@ -672,7 +680,7 @@ async function spPlay(body){
     const j=await spApi('GET','me/player/devices'),ds=(j&&j.devices)||[];
     const d=ds.find(x=>x.is_active)||ds.find(x=>/tablet|smartphone/i.test(x.type))||ds[0];
     if(!d){toast('No active Spotify device. Open Spotify on the tablet, then try again.',4500);return}
-    await spApi('PUT','me/player/play?device_id='+encodeURIComponent(d.id),body||undefined);setTimeout(spPoll,800);
+    await spApi('PUT','me/player/play?device_id='+encodeURIComponent(d.id),body||undefined);setTimeout(spPoll,1500);
   }catch(e){toast(spMsg(e),4500)}
 }
 function spInfo(){
@@ -690,7 +698,7 @@ function playBtn(sz,pl){return `<button class="play" data-s="play" aria-label="$
 const trackRow=(t,cur)=>`<button class="li ${cur?'cur2':''}" data-s="pick" data-uri="${esc(t.uri)}">${artBox(imgOf(t),36,16)}<div class="tx"><span class="a">${esc(t.name)}</span><span class="b">${esc((t.artists||[]).map(a=>a.name).join(', '))}</span></div></button>`;
 function spBody(){
   const t=sp.tab;let h='';
-  if(S.tabErr)return `<div class="list"><div class="hint" style="padding:12px">${esc(S.tabErr)}</div></div>`;
+  if(S.tabErr)return `<div class="list"><div class="hint" style="padding:12px">${esc(S.tabErr)}</div><button class="btn" data-s="retry" style="flex:none">Try again</button></div>`;
   const cu=S.P&&S.P.item&&S.P.item.uri;
   if(sp.search){
     const r=S.res;
@@ -705,6 +713,7 @@ function spBody(){
     return h+'</div>';
   }
   if(t==='Recent')return '<div class="list">'+(S.recent?S.recent.map(x=>trackRow(x,x.uri===cu)).join('')||'<div class="hint" style="padding:12px">Nothing played recently.</div>':'<div class="hint" style="padding:12px">Loading…</div>')+'</div>';
+  if(t==='Playlists'&&S.pls&&!S.pls.length)return '<div class="list"><div class="hint" style="padding:12px">No playlists found on this account.</div></div>';
   if(t==='Playlists')return '<div class="list"><div class="pg">'+(S.pls?S.pls.map(p=>`<button class="pt" data-s="pl" data-uri="${esc(p.uri)}">${artBox(imgOf(p),0,22).replace('width:0px;height:0px','width:100%;aspect-ratio:1')}${esc(p.name)}</button>`).join(''):'<div class="hint">Loading…</div>')+'</div></div>';
   if(t==='Queue')return '<div class="list">'+(S.queue?S.queue.slice(0,12).map(x=>`<div class="li">${artBox(imgOf(x),36,16)}<div class="tx"><span class="a">${esc(x.name)}</span><span class="b">${esc((x.artists||[]).map(a=>a.name).join(', ')||(x.show&&x.show.name)||'')}</span></div><span style="font-size:12px;color:var(--muted)">${fmt((x.duration_ms||0)/1000)}</span></div>`).join('')||'<div class="hint" style="padding:12px">The queue is empty.</div>':'<div class="hint" style="padding:12px">Loading…</div>')+'</div>';
   return '<div class="list">'+(S.devs?S.devs.map(d=>`<button class="li ${d.is_active?'cur2':''}" data-s="dev" data-id="${esc(d.id)}"><div class="tx"><span class="a">${esc(d.name)}</span><span class="b">${d.is_active?'Playing here':'Tap to switch'} · ${esc(d.type)}</span></div></button>`).join('')||'<div class="hint" style="padding:12px">No devices found. Open Spotify on the tablet.</div>':'<div class="hint" style="padding:12px">Loading…</div>')+'<button class="btn" data-s="openapp" style="flex:none;margin-top:6px">Open Spotify on this tablet</button></div>';
@@ -726,11 +735,14 @@ function spSearch(){
   sqT=setTimeout(async()=>{
     try{S.res=await spApi('GET','search?type=track,playlist&limit=10&q='+encodeURIComponent(q));S.tabErr=''}catch(e){S.tabErr=spMsg(e)}
     const f=document.activeElement&&document.activeElement.id==='q',pos=f?document.activeElement.selectionStart:0;
-    renderSp();if(f){const n=$('#q');if(n){n.focus();n.setSelectionRange(pos,pos)}}
+    renderSp(true);if(f){const n=$('#q');if(n){n.focus();n.setSelectionRange(pos,pos)}}
   },450);
 }
-function renderSp(){
+function renderSp(force){
   const el=$('#sp');el.className='panel'+(sp.big?' big':'');
+  const i0=spInfo(),sig=JSON.stringify([!!S.tok,S.err,i0.t,i0.s,i0.img,i0.play,i0.d,i0.dev,i0.sh,i0.rp,S.liked,sp.big,sp.tab,sp.search,sp.big?spBody():'']);
+  if(!force&&sig===S.sig&&el.firstChild){const p=$('#pos'),f=$('#fill');if(p&&f&&i0.d){const c=curPos(i0);p.textContent=fmt(c);f.style.width=(c/i0.d*100)+'%'}return}
+  S.sig=sig;
   if(!S.tok){
     const msg=S.err==='NOAUTH'?'Spotify sign-in expired.':'Connect your Spotify account to play music here.';
     el.innerHTML=`<div class="sh"><h2>Spotify</h2>${sp.big?`<button class="btn ib" data-s="close" aria-label="Collapse player">${svg(I.dn)}</button>`:''}</div>
@@ -760,6 +772,7 @@ function renderSp(){
 $('#sp').addEventListener('click',e=>{
   const b=e.target.closest('[data-s]');if(!b)return;const a=b.dataset.s,i=spInfo();
   if(a==='connect')spConnect();
+  else if(a==='retry'){S.tabErr='';S.recent=S.pls=S.queue=S.devs=null;renderSp(true);spTab()}
   else if(a==='open'){sp.big=true;renderWx();renderSp();spTab()}
   else if(a==='close'){sp.big=false;sp.search=false;sp.q='';renderWx();renderSp()}
   else if(a==='play'){
