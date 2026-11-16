@@ -177,7 +177,7 @@ body{background:radial-gradient(120% 90% at 0% 0%,#2F6C73 0%,rgba(47,108,115,0) 
       <div class="panel" id="sp"></div>
     </section>
   </div>
-  <div class="note" id="note">Preview version. Events you add are saved on this device. Page v2026-11-16e</div>
+  <div class="note" id="note">Preview version. Events you add are saved on this device. Page v2026-11-16f</div>
   </div>
   <div id="pop" hidden></div>
   <div id="modal" hidden></div>
@@ -218,7 +218,7 @@ let tt;function toast(m,ms){const t=$('#toast');t.textContent=m;t.classList.add(
 
 /* ---------- header ---------- */
 const NOW=new Date();
-const VER='2026-11-16e';
+const VER='2026-11-16f';
 const LOADDAY=NOW.getDate();
 function tick(){const n=new Date();if(n.getDate()!==LOADDAY){location.reload();return}$('#clock').textContent=n.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});$('#date').textContent=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
 tick();setInterval(tick,15000);
@@ -604,6 +604,7 @@ setInterval(loadWx,30*60*1000);
 /* ---------- Spotify ---------- */
 const SP_ID='0d7b002454644ffca3ad7dcb7ade737c',SP_REDIR='familyhub://spotify';
 const SP_SCOPE='user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played playlist-read-private playlist-read-collaborative user-library-read user-library-modify';
+const SLOG=[];const slog=m=>{const d=new Date();SLOG.push(String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0')+' '+m);if(SLOG.length>16)SLOG.shift()};
 const S={tok:store.get('hub-sp-tok',null),P:null,at:0,recent:null,pls:null,queue:null,devs:null,res:null,busy:false,liked:false,likedFor:'',err:'',tabErr:''};
 const sp={big:false,tab:'Recent',search:false,q:''};
 const fmt=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
@@ -645,6 +646,7 @@ async function spApi(method,path,body){
   const go=t=>{const ac=new AbortController();setTimeout(()=>ac.abort(),12000);return fetch('https://api.spotify.com/v1/'+path,{signal:ac.signal,method,headers:Object.assign({Authorization:'Bearer '+t},body?{'Content-Type':'application/json'}:{}),body:body?JSON.stringify(body):undefined})};
   let r;try{r=await go(a)}catch(e){throw new Error('Could not reach Spotify')}
   if(r.status===401){S.tok.e=0;a=await spAccess();r=await go(a)}
+  slog(method+' '+path.split('?')[0]+(path.indexOf('?')>0?'?…':'')+(body?' '+JSON.stringify(body).slice(0,60):'')+' → '+r.status);
   if(r.status===204||r.status===202)return null;
   let j=null;try{j=await r.json()}catch(e){}
   if(!r.ok){const e=new Error((j&&j.error&&j.error.message)||('Spotify error '+r.status));e.status=r.status;e.reason=j&&j.error&&j.error.reason;throw e}
@@ -657,6 +659,7 @@ async function spPoll(){
     const old=S.P,oi=old&&old.item,est=oi?curPos(spInfo()):0;
     const np=await spApi('GET','me/player?additional_types=episode');
     if(np&&np.item&&oi&&np.item.id===oi.id&&np.is_playing&&old.is_playing&&np.progress_ms/1000<est-3&&Date.now()>(S.accept||0))np.progress_ms=est*1000;
+    slog('state: '+(np&&np.item?((np.is_playing?'PLAYING':'paused')+' '+Math.round(np.progress_ms/1000)+'s '+(np.device&&np.device.name)):'nothing'));
     S.P=np;S.at=Date.now();S.err='';spLike();
   }
   catch(e){S.err=e.message}
@@ -698,9 +701,10 @@ const artBox=(url,sz,ic)=>`<div class="art" style="width:${sz}px;height:${sz}px;
 const imgOf=a=>{const m=(a&&a.images)||(a&&a.album&&a.album.images)||[];return(m[m.length>1?m.length-1:0]||{}).url||''};
 function playBtn(sz,pl){return `<button class="play" data-s="play" aria-label="${pl?'Pause':'Play'}" style="width:${sz}px;height:${sz}px;border-radius:${sz/2}px">${pl?fill('<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>',24):fill('<path d="M7 4l13 8-13 8z"/>',24)}</button>`}
 const trackRow=(t,cur)=>`<button class="li ${cur?'cur2':''}" data-s="pick" data-uri="${esc(t.uri)}">${artBox(imgOf(t),36,16)}<div class="tx"><span class="a">${esc(t.name)}</span><span class="b">${esc((t.artists||[]).map(a=>a.name).join(', '))}</span></div></button>`;
+const dbgLog=()=>'<div style="font:11px/1.35 monospace;color:var(--muted);white-space:pre-wrap;flex:none;margin-top:8px">'+esc(SLOG.slice(-10).join('\n'))+'</div>';
 function spBody(){
   const t=sp.tab;let h='';
-  if(S.tabErr)return `<div class="list"><div class="hint" style="padding:12px">${esc(S.tabErr)}</div><button class="btn" data-s="retry" style="flex:none">Try again</button></div>`;
+  if(S.tabErr)return `<div class="list"><div class="hint" style="padding:12px">${esc(S.tabErr)}</div><button class="btn" data-s="retry" style="flex:none">Try again</button>${t==='Devices'?dbgLog():''}</div>`;
   const cu=S.P&&S.P.item&&S.P.item.uri;
   if(sp.search){
     const r=S.res;
@@ -718,7 +722,7 @@ function spBody(){
   if(t==='Playlists'&&S.pls&&!S.pls.length)return '<div class="list"><div class="hint" style="padding:12px">No playlists found on this account.</div></div>';
   if(t==='Playlists')return '<div class="list"><div class="pg">'+(S.pls?S.pls.map(p=>`<button class="pt" data-s="pl" data-uri="${esc(p.uri)}">${artBox(imgOf(p),0,22).replace('width:0px;height:0px','width:100%;aspect-ratio:1')}${esc(p.name)}</button>`).join(''):'<div class="hint">Loading…</div>')+'</div></div>';
   if(t==='Queue')return '<div class="list">'+(S.queue?S.queue.slice(0,12).map(x=>`<div class="li">${artBox(imgOf(x),36,16)}<div class="tx"><span class="a">${esc(x.name)}</span><span class="b">${esc((x.artists||[]).map(a=>a.name).join(', ')||(x.show&&x.show.name)||'')}</span></div><span style="font-size:12px;color:var(--muted)">${fmt((x.duration_ms||0)/1000)}</span></div>`).join('')||'<div class="hint" style="padding:12px">The queue is empty.</div>':'<div class="hint" style="padding:12px">Loading…</div>')+'</div>';
-  return '<div class="list">'+(S.devs?S.devs.map(d=>`<button class="li ${d.is_active?'cur2':''}" data-s="dev" data-id="${esc(d.id)}"><div class="tx"><span class="a">${esc(d.name)}</span><span class="b">${d.is_active?'Playing here':'Tap to switch'} · ${esc(d.type)}</span></div></button>`).join('')||'<div class="hint" style="padding:12px">No devices found. Open Spotify on the tablet.</div>':'<div class="hint" style="padding:12px">Loading…</div>')+'<button class="btn" data-s="openapp" style="flex:none;margin-top:6px">Open Spotify on this tablet</button></div>';
+  return '<div class="list">'+(S.devs?S.devs.map(d=>`<button class="li ${d.is_active?'cur2':''}" data-s="dev" data-id="${esc(d.id)}"><div class="tx"><span class="a">${esc(d.name)}</span><span class="b">${d.is_active?'Playing here':'Tap to switch'} · ${esc(d.type)}</span></div></button>`).join('')||'<div class="hint" style="padding:12px">No devices found. Open Spotify on the tablet.</div>':'<div class="hint" style="padding:12px">Loading…</div>')+'<button class="btn" data-s="openapp" style="flex:none;margin-top:6px">Open Spotify on this tablet</button><div style="font:11px/1.35 monospace;color:var(--muted);white-space:pre-wrap;flex:none;margin-top:8px">'+esc(SLOG.slice(-10).join('\n'))+'</div></div>';
 }
 async function spTab(){
   if(!S.tok)return;S.tabErr='';
