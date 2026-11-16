@@ -1,12 +1,12 @@
 <title>Family Hub Dashboard</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
 /* Concept: one 1280x800 landscape stage scaled to fit any screen. Slate-blue = my calendar, dusty rose = family. */
 :root{
-  --bg:#0E1215; --panel:#1A2026; --inner:#14191E; --line:#2A333B; --pop:#222A31;
-  --text:#E8EBED; --soft:#C5CDD2; --muted:#A9B3BA; --faint:#8E99A1;
-  --accent:#7A9CB8; --family:#C99AA4; --ink:#0F1418;
-  --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --bg:#122229; --panel:#2A4A55; --inner:rgba(225,240,255,0.10); --line:rgba(225,240,255,0.16); --pop:#24444E;
+  --text:#F1F7FB; --soft:#E0EEF0; --muted:#CFE5E6; --faint:#A9C5C8;
+  --accent:#8FE0D8; --me:#4C86C2; --family:#8CC7A0; --ink:#0B2A2C;
+  --font:'Plus Jakarta Sans','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
   color-scheme:dark;
 }
 html,body{height:100%}
@@ -41,7 +41,7 @@ svg{display:block}
 .dh span:last-child{font-size:20px;font-weight:600}
 .dl{flex:1;min-height:0;background:var(--inner);border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
 .ev{border-radius:8px;padding:8px 8px 9px;color:var(--ink);font-size:13px;line-height:1.25;font-weight:500}
-.ev.me{background:var(--accent)} .ev.fam{background:var(--family)}
+.ev.me{background:var(--me)} .ev.fam{background:var(--family)}
 .ev b{display:block;font-size:11px;font-weight:600}
 .dow{text-align:center;font-size:12px;font-weight:500;letter-spacing:.04em;color:var(--muted)}
 .mg{flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));gap:6px}
@@ -51,7 +51,7 @@ svg{display:block}
 .cell.dim .n{color:var(--faint)}
 .cell.today .n{background:var(--accent);color:var(--ink)}
 .chip{border-radius:6px;padding:2px 6px;color:var(--ink);font-size:11px;line-height:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chip.me{background:var(--accent)} .chip.fam{background:var(--family)}
+.chip.me{background:var(--me)} .chip.fam{background:var(--family)}
 .chip.more{background:transparent;color:var(--muted);padding:0 4px}
 .legend{display:flex;align-items:center;gap:8px}
 .legend small{font-size:13px;color:var(--muted);margin-right:4px}
@@ -137,6 +137,22 @@ svg{display:block}
 .fi{box-sizing:border-box;width:100%;height:44px;background:var(--inner);border:1px solid var(--line);border-radius:12px;color:var(--text);font:inherit;font-size:14px;padding:0 12px;user-select:text;-webkit-user-select:text;color-scheme:dark}
 .fi:focus{outline:2px solid var(--accent);outline-offset:1px}
 .frow,.seg{display:flex;gap:10px}.mf{display:flex;justify-content:flex-end;gap:8px}
+
+/* Lagoon theme */
+body{background:radial-gradient(120% 90% at 0% 0%,#2F6C73 0%,rgba(47,108,115,0) 55%),radial-gradient(90% 70% at 100% 100%,#2D4B6A 0%,rgba(45,75,106,0) 60%),linear-gradient(160deg,#1F3B44,#122229) fixed}
+.panel,.dock{background:linear-gradient(180deg,rgba(225,240,255,0.13),rgba(225,240,255,0.05));border:1px solid rgba(225,240,255,0.14);box-shadow:inset 0 1px 0 rgba(225,240,255,0.12),0 10px 28px rgba(0,10,20,0.35)}
+.btn.on,.dh.today,.tab.on{background:linear-gradient(135deg,#A9ECE4,#6CCBC4);border-color:transparent;color:var(--ink)}
+.cell.today .n,.play{background:linear-gradient(135deg,#A9ECE4,#6CCBC4);color:var(--ink)}
+.ev.me,.chip.me{background:linear-gradient(180deg,#34669A,#27537F);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.22)}
+.ev.fam,.chip.fam{background:linear-gradient(180deg,#B7E2C2,#8CC7A0);color:#10261A}
+.dh.today span,.btn.on span{color:var(--ink)}
+.cell.dim{background:rgba(10,30,36,0.30)}
+.dock .btn{background:linear-gradient(160deg,rgba(255,255,255,0.24),rgba(255,255,255,0.10));border:0;box-shadow:inset 0 1px 0 rgba(255,255,255,0.30),0 4px 10px rgba(0,10,20,0.28);justify-content:center}
+.dock .btn.on{background:linear-gradient(135deg,#A9ECE4,#6CCBC4)}
+.dock .btn img{width:38px;height:38px;border-radius:10px;display:block}
+#pop,.mc{background:linear-gradient(180deg,#2C525D,#22434D)}
+.tile{background:linear-gradient(160deg,rgba(255,255,255,0.20),rgba(255,255,255,0.08))}
+.addt{border-color:rgba(225,240,255,0.30)}
 </style>
 
 <div id="stage">
@@ -153,7 +169,7 @@ svg{display:block}
       <div class="panel" id="sp"></div>
     </section>
   </div>
-  <div class="note">Test version. Events you add are saved on this device. Weather and Spotify are placeholders.</div>
+  <div class="note" id="note">Test version. Events you add are saved on this device. Spotify is a placeholder.</div>
   </div>
   <div id="pop" hidden></div>
   <div id="modal" hidden></div>
@@ -190,11 +206,12 @@ document.addEventListener('focusin',e=>{if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.ta
 document.addEventListener('focusout',()=>setTimeout(fit,400));
 
 /* ---------- toast ---------- */
-let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1800)}
+let tt;function toast(m,ms){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),ms||1800)}
 
 /* ---------- header ---------- */
 const NOW=new Date();
-function tick(){const n=new Date();$('#clock').textContent=n.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});$('#date').textContent=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
+const LOADDAY=NOW.getDate();
+function tick(){const n=new Date();if(n.getDate()!==LOADDAY){location.reload();return}$('#clock').textContent=n.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});$('#date').textContent=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
 tick();setInterval(tick,15000);
 
 /* ---------- calendar ---------- */
@@ -220,9 +237,10 @@ function seed(){
   }
   return out;
 }
-let EV=store.get('hub-events-v1',null);
-if(!EV){EV=seed();store.set('hub-events-v1',EV)}
-const saveEV=()=>store.set('hub-events-v1',EV);
+const GON=!!(window.HubApp&&typeof window.HubApp.requestGoogleToken==='function');
+let EV=GON?store.get('hub-events-g',[]):store.get('hub-events-v1',null);
+if(!GON&&!EV){EV=seed();store.set('hub-events-v1',EV)}
+const saveEV=()=>{if(!GON)store.set('hub-events-v1',EV)};
 function occurs(e,d){
   const b=parse(e.date);if(iso(d)<e.date)return false;
   switch(e.repeat){
@@ -237,6 +255,144 @@ function eventsFor(d){
   return EV.filter(e=>occurs(e,d)&&(e.who==='me'?cal.me:cal.fam)).sort((a,b)=>(b.allDay-a.allDay)||a.start.localeCompare(b.start));
 }
 const lbl=e=>e.allDay?'All day':t12(e.start);
+
+/* ---------- Google Calendar ---------- */
+const G={tok:null,exp:0,err:'',authErr:false,syncAt:0,cals:store.get('hub-gcals',[]),map:store.get('hub-calmap',null),
+  winS:addDays(TODAY,-45),winE:addDays(TODAY,120),pend:null,loading:false,again:false,asked:false};
+const enc=encodeURIComponent;
+function gToken(force){
+  if(!force&&G.tok&&Date.now()<G.exp)return Promise.resolve(G.tok);
+  if(G.pend)return G.pend;
+  G.pend=new Promise((res,rej)=>{
+    G.resolve=res;G.reject=rej;
+    const to=setTimeout(()=>rej(new Error('Google sign-in timed out')),120000);
+    G.clear=()=>clearTimeout(to);
+    try{window.HubApp.requestGoogleToken()}catch(e){rej(e)}
+  });
+  const done=()=>{if(G.clear)G.clear();G.pend=null};
+  G.pend.then(done,done);
+  return G.pend;
+}
+window.onGoogleToken=(t,err)=>{
+  if(t){G.tok=t;G.exp=Date.now()+50*60e3;G.err='';G.authErr=false;if(G.resolve)G.resolve(t)}
+  else{G.tok=null;G.authErr=true;G.err=err||'Google sign-in failed';if(G.reject)G.reject(new Error(G.err))}
+};
+async function gapi(path,opt){
+  opt=opt||{};
+  const go=tk=>fetch('https://www.googleapis.com/calendar/v3/'+path,{method:opt.method||'GET',body:opt.body,headers:{Authorization:'Bearer '+tk,'Content-Type':'application/json'}});
+  let t=await gToken(),r=await go(t);
+  if(r.status===401){G.tok=null;t=await gToken(true);r=await go(t)}
+  if(!r.ok){let m='';try{m=((await r.json()).error||{}).message}catch(e){}throw new Error(m||('Google error '+r.status))}
+  return r.status===204?null:r.json();
+}
+function assign(c){
+  const m=G.map||{};if(m[c.id])return m[c.id];
+  if(c.primary)return 'me';if(/family/i.test(c.name))return 'fam';return 'off';
+}
+const hhmm=d=>String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+function conv(it,c,who,out){
+  if(it.status==='cancelled')return;
+  const me=(it.attendees||[]).find(a=>a.self);if(me&&me.responseStatus==='declined')return;
+  const rm=it.reminders||{};
+  const base={title:it.summary||'(No title)',who,calId:c.id,gid:it.id,
+    repeat:it.recurringEventId?'series':'none',
+    remind:rm.useDefault?'default':((rm.overrides||[])[0]?String(rm.overrides[0].minutes):'none'),
+    loc:it.location||'',guests:(it.attendees||[]).map(a=>a.email).filter(Boolean).join(', '),
+    notes:(it.description||'').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]*>/g,'')};
+  if(it.start&&it.start.date){
+    const s=it.start.date,e=it.end.date;
+    for(let d=parse(s),n=0;iso(d)<e&&n<60;d=addDays(d,1),n++){const ds=iso(d);
+      out.push({...base,id:'g|'+c.id+'|'+it.id+'|'+ds,date:ds,start:'00:00',end:'23:59',allDay:true,spanStart:s,spanEnd:e})}
+  }else if(it.start&&it.start.dateTime){
+    const sd=new Date(it.start.dateTime),ed=new Date(it.end.dateTime),ds=iso(sd);
+    out.push({...base,id:'g|'+c.id+'|'+it.id+'|'+ds,date:ds,start:hhmm(sd),end:iso(ed)===ds?hhmm(ed):'23:59',allDay:false});
+  }
+}
+function setNote(){
+  const n=$('#note');if(!n)return;
+  if(!GON)return;
+  const t=G.syncAt?new Date(G.syncAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'';
+  n.textContent=G.authErr&&!G.tok?'Google Calendar is not connected.':
+    (G.syncAt?'Google Calendar · synced '+t+(G.err?' · can’t reach Google, showing saved events':''):(G.err?'Can’t reach Google Calendar yet.':'Connecting to Google Calendar…'));
+}
+async function gLoad(){
+  if(!GON)return;
+  if(G.loading){G.again=true;return}
+  G.loading=true;
+  try{
+    const cl=await gapi('users/me/calendarList?minAccessRole=reader&maxResults=250');
+    G.cals=(cl.items||[]).map(c=>({id:c.id,name:c.summaryOverride||c.summary||c.id,role:c.accessRole,primary:!!c.primary}));
+    store.set('hub-gcals',G.cals);
+    const tmin=enc(G.winS.toISOString()),tmax=enc(G.winE.toISOString()),out=[];
+    for(const c of G.cals){
+      const who=assign(c);if(who==='off')continue;
+      let pt='';
+      for(let p=0;p<6;p++){
+        const j=await gapi(`calendars/${enc(c.id)}/events?singleEvents=true&orderBy=startTime&maxResults=500&timeMin=${tmin}&timeMax=${tmax}${pt?'&pageToken='+enc(pt):''}`);
+        (j.items||[]).forEach(it=>conv(it,c,who,out));pt=j.nextPageToken;if(!pt)break;
+      }
+    }
+    EV=out;store.set('hub-events-g',EV);G.syncAt=Date.now();G.err='';G.authErr=false;
+    if(!G.map&&!G.asked&&!mod){G.asked=true;openCals()}
+  }catch(e){G.err=e.message||'Could not reach Google'}
+  G.loading=false;setNote();renderCal();
+  if(G.again){G.again=false;gLoad()}
+}
+function gEnsure(){
+  if(!GON)return;
+  const a=cal.anchor;
+  if(a<addDays(G.winS,10)||a>addDays(G.winE,-50)){G.winS=addDays(a,-60);G.winE=addDays(a,120);gLoad()}
+}
+function writeCal(who){
+  const w=G.cals.filter(c=>assign(c)===who&&(c.role==='owner'||c.role==='writer'));
+  return w.find(c=>c.primary)||w[0]||null;
+}
+function gBody(d,e){
+  const o={summary:d.title,location:d.loc||''};
+  if(d.allDay){
+    let s=d.date,en=iso(addDays(parse(d.date),1));
+    if(e&&e.allDay&&e.date===d.date&&e.spanStart){s=e.spanStart;en=e.spanEnd}
+    o.start={date:s};o.end={date:en};
+  }else{
+    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    o.start={dateTime:d.date+'T'+d.start+':00',timeZone:tz};o.end={dateTime:d.date+'T'+d.end+':00',timeZone:tz};
+  }
+  if(!e||d.notes!==e.notes)o.description=d.notes||'';
+  if(!e||d.remind!==e.remind){
+    o.reminders=d.remind==='default'?{useDefault:true}:{useDefault:false,overrides:d.remind==='none'?[]:[{method:'popup',minutes:+d.remind}]};
+  }
+  if(!e||d.guests!==e.guests){
+    o.attendees=d.guests.split(/[,;\s]+/).filter(x=>x.indexOf('@')>0).map(x=>({email:x}));
+  }
+  if(!e&&{daily:1,weekly:1,monthly:1,yearly:1}[d.repeat])o.recurrence=['RRULE:FREQ='+d.repeat.toUpperCase()];
+  return o;
+}
+async function gSave(d,e){
+  try{
+    toast('Saving…',4000);
+    if(e){
+      await gapi(`calendars/${enc(e.calId)}/events/${enc(e.gid)}?sendUpdates=none`,{method:'PATCH',body:JSON.stringify(gBody(d,e))});
+    }else{
+      const c=writeCal(d.who);
+      if(!c){toast('No editable Google calendar is set for '+CALN[d.who]+'. Open the settings button and choose one.',4500);return false}
+      await gapi(`calendars/${enc(c.id)}/events?sendUpdates=none`,{method:'POST',body:JSON.stringify(gBody(d,null))});
+    }
+    toast('Event saved');gLoad();return true;
+  }catch(err){toast('Could not save: '+err.message,4500);return false}
+}
+async function gDelete(e){
+  try{
+    toast('Deleting…',4000);
+    await gapi(`calendars/${enc(e.calId)}/events/${enc(e.gid)}?sendUpdates=none`,{method:'DELETE'});
+    EV=EV.filter(x=>!(x.calId===e.calId&&x.gid===e.gid));store.set('hub-events-g',EV);
+    toast('Event deleted');gLoad();return true;
+  }catch(err){toast('Could not delete: '+err.message,4500);return false}
+}
+function openCals(){
+  const dr={};G.cals.forEach(c=>{dr[c.id]=assign(c)});
+  mod={mode:'cals',draft:dr};renderModal();
+}
+
 function calTitle(){
   if(cal.view==='month')return new Date(cal.anchor.getFullYear(),cal.anchor.getMonth(),1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
   if(cal.view==='agenda'){const e=addDays(cal.anchor,20);return `Agenda · ${MON[cal.anchor.getMonth()]} ${cal.anchor.getDate()} – ${MON[e.getMonth()]} ${e.getDate()}`}
@@ -251,6 +407,7 @@ function shift(n){
 }
 const evAttr=(e,d)=>`data-ev="${e.id}" data-date="${iso(d)}"`;
 function renderCal(){
+  gEnsure();
   const m0=mondayOf(TODAY);
   $('#wkof').textContent='Week of '+MON[m0.getMonth()]+' '+m0.getDate();
   const vb=v=>`<button class="btn ${cal.view===v?'on':''}" data-a="${v}">${v[0].toUpperCase()+v.slice(1)}</button>`;
@@ -277,13 +434,14 @@ function renderCal(){
     h+='<div class="list ag">';let any=false;
     for(let k=0;k<21;k++){const d=addDays(cal.anchor,k),ev=eventsFor(d);if(!ev.length)continue;any=true;
       h+=`<div class="agd ${same(d,TODAY)?'today':''}">${d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>`+
-      ev.map(e=>`<button class="li ag-i" ${evAttr(e,d)}><span class="dot" style="background:var(--${e.who==='me'?'accent':'family'})"></span><span style="width:84px;font-size:13px;color:var(--muted);text-align:left;flex:none">${lbl(e)}</span><div class="tx"><span class="a">${e.title}</span>${e.loc?`<span class="b">${e.loc}</span>`:''}</div></button>`).join('')}
+      ev.map(e=>`<button class="li ag-i" ${evAttr(e,d)}><span class="dot" style="background:var(--${e.who==='me'?'me':'family'})"></span><span style="width:84px;font-size:13px;color:var(--muted);text-align:left;flex:none">${lbl(e)}</span><div class="tx"><span class="a">${e.title}</span>${e.loc?`<span class="b">${e.loc}</span>`:''}</div></button>`).join('')}
     if(!any)h+='<div class="hint" style="padding:12px">No events in the next three weeks.</div>';
     h+='</div>';
   }
+  if(GON&&G.authErr&&!G.tok)h+=`<div class="legend" style="flex:none"><span class="hint" style="flex:1">Google Calendar is not connected${G.err?': '+esc(G.err):''}</span><button class="btn on" data-a="gconnect">Connect Google</button></div>`;
   h+=`<div class="legend"><small>Showing</small>
-   <button class="btn" data-a="me" aria-pressed="${cal.me}"><span class="dot" style="background:var(--accent)"></span>My calendar</button>
-   <button class="btn" data-a="fam" aria-pressed="${cal.fam}"><span class="dot" style="background:var(--family)"></span>Family calendar</button></div>`;
+   <button class="btn" data-a="me" aria-pressed="${cal.me}"><span class="dot" style="background:var(--me)"></span>My calendar</button>
+   <button class="btn" data-a="fam" aria-pressed="${cal.fam}"><span class="dot" style="background:var(--family)"></span>Family calendar</button>${GON?`<span style="flex:1"></span><button class="btn ib" data-a="cals" aria-label="Choose calendars">${svg('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',20)}</button>`:''}</div>`;
   $('#cal').innerHTML=h;
 }
 $('#cal').addEventListener('click',e=>{
@@ -300,18 +458,20 @@ $('#cal').addEventListener('click',e=>{
   else if(a==='add')openForm(null,cal.view==='month'?TODAY:(cal.view==='week'&&mondayOf(cal.anchor)<=TODAY&&TODAY<=addDays(mondayOf(cal.anchor),6)?TODAY:cal.anchor));
   else if(a==='me'){cal.me=!cal.me;renderCal()}
   else if(a==='fam'){cal.fam=!cal.fam;renderCal()}
+  else if(a==='gconnect'){G.err='';gLoad()}
+  else if(a==='cals'){G.cals.length?openCals():toast('Calendars are not loaded yet')}
 });
 
 /* ---------- event details / add / edit ---------- */
 let mod=null;
-const REP={none:'Does not repeat',daily:'Every day',weekly:'Every week',monthly:'Every month',yearly:'Every year'};
-const REM={none:'No reminder','10':'10 minutes before','30':'30 minutes before','60':'1 hour before','1440':'1 day before'};
+const REP={series:'Repeating event',none:'Does not repeat',daily:'Every day',weekly:'Every week',monthly:'Every month',yearly:'Every year'};
+const REM={default:'Calendar default',none:'No reminder','10':'10 minutes before','30':'30 minutes before','60':'1 hour before','1440':'1 day before'};
 const CALN={me:'My calendar',fam:'Family calendar'};
-const col=w=>w==='me'?'var(--accent)':'var(--family)';
+const col=w=>w==='me'?'var(--me)':'var(--family)';
 function openView(id,date){mod={mode:'view',id,date,confirm:false};renderModal()}
 function openForm(id,date){
   const e=id?EV.find(x=>x.id===id):null;
-  mod={mode:'form',id,date,draft:e?{...e}:{title:'',who:'me',date:iso(date),start:'09:00',end:'10:00',allDay:false,repeat:'none',remind:'30',loc:'',guests:'',notes:''}};
+  mod={mode:'form',id,date,draft:e?{...e}:{title:'',who:'me',date:iso(date),start:'09:00',end:'10:00',allDay:false,repeat:'none',remind:GON?'default':'30',loc:'',guests:'',notes:''}};
   renderModal();
 }
 function collect(){
@@ -325,14 +485,23 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 function renderModal(){
   const m=$('#modal');if(!mod){m.hidden=true;m.innerHTML='';return}
   m.hidden=false;
+  if(mod.mode==='cals'){
+    const dr=mod.draft;
+    m.innerHTML=`<div class="mc" role="dialog" aria-label="Choose calendars">
+     <div class="mh"><h3>Calendars</h3><button class="btn" data-m="cancel">Cancel</button><button class="btn on" data-m="calsave">Save</button></div>
+     <div class="hint">Choose which Google calendars appear as My calendar or Family calendar.</div>`+
+     G.cals.map((c,i)=>`<div style="display:flex;align-items:center;gap:8px"><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px">${esc(c.name)}</span>`+
+       [['me','My'],['fam','Family'],['off','Off']].map(o=>`<button class="btn ${dr[c.id]===o[0]?'on':''}" data-m="calset" data-i="${i}" data-v="${o[0]}" style="min-width:64px">${o[1]}</button>`).join('')+`</div>`).join('')+`</div>`;
+    return;
+  }
   if(mod.mode==='view'){
     const e=EV.find(x=>x.id===mod.id);if(!e){mod=null;return renderModal()}
     const when=parse(mod.date).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
     m.innerHTML=`<div class="mc" role="dialog" aria-label="Event details">
      <div class="mh"><span class="dot" style="width:14px;height:14px;border-radius:7px;background:${col(e.who)}"></span><h3>${esc(e.title)}</h3><button class="btn ib" data-m="close" aria-label="Close">${svg(I.x)}</button></div>
      ${row('When',when+'<br>'+(e.allDay?'All day':t12(e.start)+' – '+t12(e.end)))}
-     ${row('Repeats',e.repeat==='none'?'':REP[e.repeat])}${row('Where',esc(e.loc))}${row('Guests',esc(e.guests))}${row('Reminder',e.remind==='none'?'':REM[e.remind])}${row('Calendar',CALN[e.who])}${row('Notes',esc(e.notes))}
-     ${mod.confirm?`<div class="mf" style="align-items:center"><span style="flex:1;font-size:14px">${e.repeat==='none'?'Delete this event?':'Delete every event in this series?'}</span><button class="btn" data-m="delno">Keep</button><button class="btn" data-m="delyes" style="background:#C78F8F;border-color:#C78F8F;color:var(--ink)">Delete</button></div>`
+     ${row('Repeats',e.repeat==='none'?'':REP[e.repeat])}${row('Where',esc(e.loc))}${row('Guests',esc(e.guests))}${row('Reminder',e.remind==='none'?'':(REM[e.remind]||e.remind+' minutes before'))}${row('Calendar',CALN[e.who])}${row('Notes',esc(e.notes))}
+     ${mod.confirm?`<div class="mf" style="align-items:center"><span style="flex:1;font-size:14px">${e.repeat==='series'?'Delete just this one?':(e.repeat==='none'?'Delete this event?':'Delete every event in this series?')}</span><button class="btn" data-m="delno">Keep</button><button class="btn" data-m="delyes" style="background:#C78F8F;border-color:#C78F8F;color:var(--ink)">Delete</button></div>`
      :`<div class="mf"><button class="btn" data-m="del">Delete</button><button class="btn on" data-m="edit">Edit</button></div>`}</div>`;
     return;
   }
@@ -340,13 +509,13 @@ function renderModal(){
   m.innerHTML=`<div class="mc" role="dialog" aria-label="${mod.id?'Edit event':'New event'}">
    <div class="mh"><h3>${mod.id?'Edit event':'New event'}</h3><button class="btn" data-m="cancel">Cancel</button><button class="btn on" data-m="save">Save</button></div>
    <input id="f-title" class="fi" placeholder="Add title" value="${esc(d.title)}" style="font-size:18px;height:48px">
-   <div class="seg"><button class="btn ${d.who==='me'?'on':''}" data-m="who" data-w="me" style="flex:1"><span class="dot" style="background:var(--accent)"></span>My calendar</button>
-    <button class="btn ${d.who==='fam'?'on':''}" data-m="who" data-w="fam" style="flex:1;${d.who==='fam'?'background:var(--family);border-color:var(--family)':''}"><span class="dot" style="background:var(--family)"></span>Family calendar</button></div>
+   ${GON&&mod.id?`<div class="hint">${CALN[d.who]}</div>`:`<div class="seg"><button class="btn ${d.who==='me'?'on':''}" data-m="who" data-w="me" style="flex:1"><span class="dot" style="background:var(--me)"></span>My calendar</button>
+    <button class="btn ${d.who==='fam'?'on':''}" data-m="who" data-w="fam" style="flex:1;${d.who==='fam'?'background:var(--family);border-color:var(--family)':''}"><span class="dot" style="background:var(--family)"></span>Family calendar</button></div>`}
    <div class="frow"><input id="f-date" class="fi" type="date" value="${d.date}" style="flex:1">
     <button class="btn ${d.allDay?'on':''}" data-m="allday" aria-pressed="${d.allDay}">All day</button></div>
    ${d.allDay?'':`<div class="frow"><input id="f-start" class="fi" type="time" value="${d.start}" style="flex:1"><span style="align-self:center;color:var(--muted)">to</span><input id="f-end" class="fi" type="time" value="${d.end}" style="flex:1"></div>`}
-   <div class="frow"><select id="f-rep" class="fi" style="flex:1">${Object.keys(REP).map(k=>`<option value="${k}" ${d.repeat===k?'selected':''}>${REP[k]}</option>`).join('')}</select>
-    <select id="f-rem" class="fi" style="flex:1">${Object.keys(REM).map(k=>`<option value="${k}" ${d.remind===k?'selected':''}>${REM[k]}</option>`).join('')}</select></div>
+   <div class="frow"><select id="f-rep" class="fi" style="flex:1" ${GON&&mod.id?'disabled':''}>${Object.keys(REP).filter(k=>k!=='series'||d.repeat==='series').map(k=>`<option value="${k}" ${d.repeat===k?'selected':''}>${REP[k]}</option>`).join('')}</select>
+    <select id="f-rem" class="fi" style="flex:1">${Object.keys(REM).concat(REM[d.remind]?[]:[d.remind]).map(k=>`<option value="${k}" ${d.remind===k?'selected':''}>${REM[k]||k+' minutes before'}</option>`).join('')}</select></div>
    <input id="f-loc" class="fi" placeholder="Add location" value="${esc(d.loc)}">
    <input id="f-guests" class="fi" placeholder="Add guests (names or emails)" value="${esc(d.guests)}">
    <textarea id="f-notes" class="fi" placeholder="Add description" rows="2" style="height:auto;padding:10px 12px;resize:none">${esc(d.notes)}</textarea>
@@ -359,28 +528,68 @@ $('#modal').addEventListener('click',e=>{
   else if(a==='edit'){const ev=EV.find(x=>x.id===mod.id);openForm(ev.id,parse(mod.date))}
   else if(a==='del'){mod.confirm=true;renderModal()}
   else if(a==='delno'){mod.confirm=false;renderModal()}
-  else if(a==='delyes'){EV=EV.filter(x=>x.id!==mod.id);saveEV();mod=null;renderModal();renderCal();toast('Event deleted')}
+  else if(a==='delyes'){if(GON){const ev=EV.find(x=>x.id===mod.id);mod=null;renderModal();if(ev)gDelete(ev);return}EV=EV.filter(x=>x.id!==mod.id);saveEV();mod=null;renderModal();renderCal();toast('Event deleted')}
+  else if(a==='calset'){mod.draft[G.cals[+b.dataset.i].id]=b.dataset.v;renderModal()}
+  else if(a==='calsave'){G.map=mod.draft;store.set('hub-calmap',G.map);mod=null;renderModal();gLoad()}
   else if(a==='who'){collect();mod.draft.who=b.dataset.w;renderModal()}
   else if(a==='allday'){collect();mod.draft.allDay=!mod.draft.allDay;renderModal()}
   else if(a==='save'){
     collect();const d=mod.draft;
     if(!d.allDay&&d.end<=d.start){toast('End time must be after the start time');return}
     d.title=d.title.trim()||'(No title)';
+    if(GON){const ex=mod.id?EV.find(x=>x.id===mod.id):null;gSave(d,ex).then(ok=>{if(ok){cal.anchor=parse(d.date);mod=null;renderModal()}});return}
     if(mod.id){EV=EV.map(x=>x.id===mod.id?{...d,id:mod.id}:x)}else{EV.push({...d,id:'u'+Date.now()})}
     saveEV();cal.anchor=parse(d.date);mod=null;renderModal();renderCal();toast('Event saved');
   }
 });
 
-/* ---------- weather (sample) ---------- */
-const FC=[['THU','Cloudy','50°','40°'],['FRI','Showers','47°','38°'],['SAT','Cloudy','44°','35°'],['SUN','Clear','46°','36°'],['MON','Partly sunny','49°','39°']];
+/* ---------- weather (National Weather Service) ---------- */
+const WXLOC={lat:41.7728,lon:-87.9757,name:'Westmont, IL'};
+const CLOUD='<path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 8.5a4.5 4.5 0 0 1 0 9.5z"/>';
+const WI={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+ cloud:CLOUD,
+ part:'<circle cx="9" cy="8" r="3"/><path d="M9 2v1M3 8H2M4.5 3.5l.7.7M13.5 3.5l-.7.7"/><path d="M8 20a3.5 3.5 0 0 1-.4-7A4.6 4.6 0 0 1 16.5 12a3.5 3.5 0 0 1 0 8z"/>',
+ rain:CLOUD+'<path d="M8 20l-1 2M12 20l-1 2M16 20l-1 2"/>',
+ snow:CLOUD+'<path d="M8 21h.01M12 21h.01M16 21h.01M10 23h.01M14 23h.01"/>',
+ storm:CLOUD+'<path d="M12 17l-2 3h3l-2 3"/>',
+ fog:'<path d="M4 9h16M3 13h18M5 17h14"/>'};
+function wxKind(t){t=(t||'').toLowerCase();
+  if(/thunder/.test(t))return'storm';if(/snow|flurr|sleet|ice|wintry/.test(t))return'snow';
+  if(/rain|shower|drizzle/.test(t))return'rain';if(/fog|haze|mist|smoke/.test(t))return'fog';
+  if(/partly|mostly sunny|mostly clear/.test(t))return'part';if(/cloud|overcast/.test(t))return'cloud';return'sun'}
+let WX=store.get('hub-wx',null);
+async function loadWx(){
+  try{
+    const hd={headers:{Accept:'application/geo+json'}};
+    let pt=store.get('hub-wxpt',null);
+    if(!pt){const r=await fetch(`https://api.weather.gov/points/${WXLOC.lat},${WXLOC.lon}`,hd);if(!r.ok)throw 0;const j=await r.json();
+      pt={f:j.properties.forecast,h:j.properties.forecastHourly};store.set('hub-wxpt',pt)}
+    const [ra,rb]=await Promise.all([fetch(pt.h,hd),fetch(pt.f,hd)]);if(!ra.ok||!rb.ok)throw 0;
+    const hp=(await ra.json()).properties.periods,dp=(await rb.json()).properties.periods;
+    const days={},order=[];
+    dp.forEach(p=>{const k=p.startTime.slice(0,10);if(!days[k]){days[k]={k};order.push(k)}
+      const o=days[k];if(p.isDaytime){o.hi=p.temperature;o.s=p.shortForecast}else{o.lo=p.temperature;if(!o.s)o.s=p.shortForecast}});
+    const today=order[0],td=days[today];
+    WX={at:Date.now(),t:hp[0].temperature,s:hp[0].shortForecast,hi:td.hi,lo:td.lo,
+      hrs:hp.slice(0,7).map(p=>({h:+p.startTime.slice(11,13),t:p.temperature})),
+      days:order.slice(1,6).map(k=>({n:['SUN','MON','TUE','WED','THU','FRI','SAT'][new Date(+k.slice(0,4),+k.slice(5,7)-1,+k.slice(8,10)).getDay()],s:days[k].s,hi:days[k].hi,lo:days[k].lo}))};
+    store.set('hub-wx',WX);
+  }catch(e){}
+  renderWx();
+}
 function renderWx(){
   const c=sp.big;
   $('#wx').className='panel'+(c?' compact':'');
-  $('#wx').innerHTML=`<div class="wh"><h2>Weather</h2><span>National Weather Service · sample data</span></div>
-  <div class="cur"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#C5CDD2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 8.5a4.5 4.5 0 0 1 0 9.5z"/></svg>
-  <div><div class="t">48°</div><div class="d">Cloudy · H 52° L 41°</div></div></div>`+
-  (c?'':`<div class="fc">`+FC.map(f=>`<div class="fr"><b>${f[0]}</b><i>${f[1]}</i><em>${f[2]}</em><u>${f[3]}</u></div>`).join('')+'</div>');
+  const w=WX;
+  const stamp=w?'Updated '+new Date(w.at).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Loading…';
+  const t=x=>x==null?'–':x+'°';
+  $('#wx').innerHTML=`<div class="wh"><h2>Weather</h2><span>${WXLOC.name} · ${stamp}</span></div>`+
+  (w?`<div class="cur"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#E0EEF0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${WI[wxKind(w.s)]}</svg>
+  <div><div class="t">${w.t}°</div><div class="d">${w.s} · H ${t(w.hi)} L ${t(w.lo)}</div></div></div>`+
+  (c?'':`<div class="fc">`+w.days.map(f=>`<div class="fr"><b>${f.n}</b><i>${f.s||''}</i><em>${t(f.hi)}</em><u>${t(f.lo)}</u></div>`).join('')+'</div>'):
+  `<div class="cur"><div class="d">Getting the forecast…</div></div>`);
 }
+setInterval(loadWx,30*60*1000);
 
 /* ---------- spotify (sample) ---------- */
 const TR=[
@@ -457,7 +666,7 @@ const ALL_APPS=['Netflix','Disney+','Paramount+','Prime Video','Pluto TV','Hulu 
 let apps=store.get('hub-watch',['Netflix','Disney+','Paramount+','Prime Video','Pluto TV']);
 let popOpen=false,edit=false,adding=false;
 const HUB=window.HubApp||null;
-const PKG={Keep:'com.google.android.keep',Drive:'com.google.android.apps.docs',Gemini:'com.google.android.apps.bard',Claude:'com.anthropic.claude',Arlo:'com.netgear.android','Netflix':'com.netflix.mediaclient','Disney+':'com.disney.disneyplus','Paramount+':'com.cbs.app','Prime Video':'com.amazon.avod.thirdpartyclient','Pluto TV':'tv.pluto.android','YouTube':'com.google.android.youtube','Max':'com.wbd.stream','Apple TV':'com.apple.atve.androidtv.appletv','Peacock':'com.peacocktv.peacockandroid'};
+const PKG={Keep:'com.google.android.keep',Drive:'com.google.android.apps.docs',Gemini:'com.google.android.apps.bard',Claude:'com.anthropic.claude',Arlo:'com.arlo.app','Netflix':'com.netflix.mediaclient','Disney+':'com.disney.disneyplus','Paramount+':'com.cbs.app','Prime Video':'com.amazon.avod.thirdpartyclient','Pluto TV':'tv.pluto.android','YouTube':'com.google.android.youtube','Max':'com.wbd.stream','Apple TV':'com.apple.atve.androidtv.appletv','Peacock':'com.peacocktv.peacockandroid'};
 const URLS={'Hulu (web)':'https://www.hulu.com'};
 let custom=store.get('hub-custom',{}),installed=null,curPick=[];
 function openApp(name){
@@ -475,8 +684,14 @@ const DI={Dashboard:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="1
  Claude:'<path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>',
  Watch:'<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>',
  Arlo:'<path d="M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M15 11l6-3v8l-6-3"/>'};
+const ICO=store.get('hub-ico',{});
+function loadIcons(){
+  if(!HUB||!HUB.getIcon)return;let ch=false;
+  ['Keep','Drive','Gemini','Claude','Arlo'].forEach(n=>{if(ICO[n])return;try{const d=HUB.getIcon(PKG[n]);if(d){ICO[n]=d;ch=true}}catch(e){}});
+  if(ch){store.set('hub-ico',ICO);renderDock()}
+}
 function renderDock(){
-  const b=(n,extra='',cls='')=>`<button class="btn ${cls}" data-d="${n}" ${extra} aria-label="${n}">${svg(DI[n],26,1.8)}<span>${n}</span></button>`;
+  const b=(n,extra='',cls='')=>`<button class="btn ${cls}" data-d="${n}" ${extra} aria-label="${n}">${ICO[n]?`<img alt="" src="data:image/png;base64,${ICO[n]}">`:svg(DI[n],26,1.8)}<span>${n}</span></button>`;
   $('#dock').innerHTML=b('Dashboard','','on')+OTHER.map(n=>b(n)).join('')+b('Watch',`id="wbtn" style="${popOpen?'border-color:var(--accent);color:var(--accent)':''}"`)+b('Arlo');
 }
 function renderPop(){
@@ -520,5 +735,5 @@ document.addEventListener('pointerdown',e=>{
   if(popOpen&&!e.target.closest('#pop')&&!e.target.closest('#wbtn')){popOpen=false;edit=false;adding=false;renderDock();renderPop()}
 });
 
-renderCal();renderWx();renderSp();renderDock();renderPop();
+renderCal();setNote();if(GON){gLoad();setInterval(gLoad,300000)}renderWx();loadWx();renderSp();renderDock();renderPop();loadIcons();
 </script>
