@@ -451,7 +451,7 @@ function renderCal(){
   if(GON&&G.authErr&&!G.tok)h+=`<div class="legend" style="flex:none"><span class="hint" style="flex:1">Google Calendar is not connected${G.err?': '+esc(G.err):''}</span><button class="btn on" data-a="gconnect">Connect Google</button></div>`;
   h+=`<div class="legend"><small>Showing</small>
    <button class="btn" data-a="me" aria-pressed="${cal.me}"><span class="dot" style="background:var(--me)"></span>My calendar</button>
-   <button class="btn" data-a="fam" aria-pressed="${cal.fam}"><span class="dot" style="background:var(--family)"></span>Family calendar</button>${GON?`<span style="flex:1"></span><button class="btn ib" data-a="cals" aria-label="Choose calendars">${svg('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',20)}</button>`:''}</div>`;
+   <button class="btn" data-a="fam" aria-pressed="${cal.fam}"><span class="dot" style="background:var(--family)"></span>Family calendar</button><span style="flex:1"></span><button class="btn ib" data-a="reset" aria-label="Reload dashboard">${svg('<path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/>',20)}</button>${GON?`<button class="btn ib" data-a="cals" aria-label="Choose calendars">${svg('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',20)}</button>`:''}</div>`;
   $('#cal').innerHTML=h;
 }
 $('#cal').addEventListener('click',e=>{
@@ -469,6 +469,7 @@ $('#cal').addEventListener('click',e=>{
   else if(a==='me'){cal.me=!cal.me;renderCal()}
   else if(a==='fam'){cal.fam=!cal.fam;renderCal()}
   else if(a==='gconnect'){G.err='';gLoad()}
+  else if(a==='reset'){hubReload()}
   else if(a==='cals'){G.cals.length?openCals():toast('Calendars are not loaded yet')}
 });
 
@@ -896,8 +897,9 @@ document.addEventListener('pointerdown',e=>{
 
 
 /* ---------- hold the clock for 1.5 seconds to reload the newest page ---------- */
+function hubReload(){toast('Reloading…');setTimeout(()=>{location.replace(location.pathname+'?v='+Date.now())},200)}
 (function(){let t=null;const c=$('#clock');
-  const go=()=>{toast('Reloading…');setTimeout(()=>{location.replace(location.pathname+'?v='+Date.now())},200)};
+  const go=hubReload;
   c.addEventListener('pointerdown',()=>{clearTimeout(t);t=setTimeout(go,1500)});
   ['pointerup','pointerleave','pointercancel'].forEach(ev=>c.addEventListener(ev,()=>clearTimeout(t)));
 })();
